@@ -476,4 +476,35 @@
     color: var(--c-cyan);
     border-color: var(--c-cyan);
   }
+
+  /* ---- Touch ------------------------------------------------------------
+     Two things break this on a phone. iOS zooms the whole page when you
+     focus an input smaller than 16px, which would wreck the layout the
+     moment someone taps the prompt. And 24-26px controls are well under
+     the 44px a finger needs.
+  --------------------------------------------------------------------- */
+  @media (pointer: coarse) {
+    .line-in.live input {
+      font-size: 16px;
+      min-height: 40px;
+    }
+    .term-hints {
+      gap: 10px;
+      padding: 12px clamp(14px, 3vw, 26px);
+    }
+    .term-hints button {
+      min-height: 44px;
+      padding: 2px 16px;
+      font-size: 14px;
+    }
+    .term-theme {
+      min-height: 36px;
+      min-width: 56px;
+      font-size: 13px;
+    }
+    /* A bigger hit area for the prompt line itself. */
+    .line-in.live {
+      padding: 6px 0;
+    }
+  }
 }
