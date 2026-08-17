@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>Lee Lionel — Software Engineer</title>
+    <meta
+      name="description"
+      content="Lee Lionel — software engineer in Singapore. A portfolio you operate from a command line: type help, ls, or open a project."
+    />
+    <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Lee Lionel — Software Engineer" />
+    <meta
+      property="og:description"
+      content="Lee Lionel — software engineer in Singapore. A portfolio you operate from a command line: type help, ls, or open a project."
+    />
+
+    <!-- Stamps the saved appearance before first paint, so there's no flash. -->
+    <script>
+      try {
+        var t = localStorage.getItem('portfolio-theme')
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t)
+          document.documentElement.style.colorScheme = t
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <!--
+      THESIS: A portfolio you operate rather than scroll. Refuses the
+      scrolling-document arrangement every portfolio ships.
+      OWN-WORLD: a terminal. JetBrains Mono throughout, a real window with
+      traffic lights, and an ANSI-ish scheme where colour carries meaning —
+      cyan names things, green is a value or a prompt, magenta tags, amber
+      warns, red errors. Dark by default, because that is what a terminal is.
+      STORY: a visitor types (or clicks) their way through the work, and the
+      commands are the site map.
+      FIRST VIEWPORT: the window, a banner, and `whoami` already run, so the
+      screen is never an empty prompt. Suggestions sit under the input.
+      FORM: command line, chosen against a scrolling page and a card deck.
+      FINISH: unreviewed and undocumented is unfinished.
+    -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
