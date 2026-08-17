@@ -22,6 +22,21 @@ const PROMPT = 'lionel@portfolio ~ %'
 /** Typed on load, so the screen is never an empty prompt. */
 const BOOT = ['whoami']
 
+/**
+ * The command in the URL, if any: /#open sanjis-kitchen
+ *
+ * Without this there is no way to link anyone to a particular project —
+ * every visitor lands on the same prompt and has to be told what to type.
+ */
+function commandFromUrl() {
+  if (typeof window === 'undefined') return ''
+  try {
+    return decodeURIComponent(window.location.hash.replace(/^#/, '')).trim()
+  } catch {
+    return ''
+  }
+}
+
 /** Offered under the prompt — nobody should have to guess a command. */
 const SUGGESTIONS = ['help', 'ls', 'experience', 'skills', 'contact']
 
@@ -61,18 +76,30 @@ export function Terminal() {
       setHistory((current) => [line, ...current])
       setHistoryIndex(-1)
 
-      const { output } = runLine(line, context)
+      const { output, known } = runLine(line, context)
       if (output) push('output', output)
+
+      // Keep the URL pointing at the last real command, so the address bar
+      // is always something worth copying. replaceState, so this doesn't
+      // fill the back button with every keystroke of a session.
+      if (known && line !== 'clear') {
+        try {
+          window.history.replaceState(null, '', `#${encodeURIComponent(line)}`)
+        } catch {
+          /* history is unavailable in some embeds; the terminal still works */
+        }
+      }
     },
     // context is rebuilt each render but only reads current values.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [push, resolved],
   )
 
-  // Boot: run the opening command once, after a beat.
+  // Boot: run whatever the URL asked for, or the opening command.
   useEffect(() => {
     const timer = setTimeout(() => {
-      for (const line of BOOT) submit(line)
+      const requested = commandFromUrl()
+      for (const line of requested ? [...BOOT, requested] : BOOT) submit(line)
       setBooted(true)
     }, 340)
     return () => clearTimeout(timer)
