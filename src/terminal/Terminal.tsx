@@ -111,6 +111,10 @@ export function Terminal() {
       return
     }
     if (e.key === 'Tab') {
+      // Tab completes only when there is something to complete. With an
+      // empty prompt it moves focus normally, so the terminal is never a
+      // keyboard trap — WCAG 2.1.2. Shift+Tab always leaves.
+      if (!input.trim() || e.shiftKey) return
       e.preventDefault()
       complete()
       return

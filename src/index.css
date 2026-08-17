@@ -32,9 +32,9 @@
   --l-well: #ffffff;
   --l-line: #ddd9d2;
   --l-ink: #2b2b2b;
-  --l-dim: #75706a;
+  --l-dim: #6b665f;
   --l-cyan: #10707f;
-  --l-green: #4a7c22;
+  --l-green: #416d1e;
   --l-magenta: #9a3fa8;
   --l-amber: #9a6500;
   --l-red: #b3232f;
@@ -260,8 +260,14 @@
     color: var(--c-ink);
     background: none;
     border: none;
-    outline: none;
     padding: 0;
+    outline: none;
+  }
+  /* Tabbing back in should show where focus landed. */
+  .line-in.live input:focus-visible {
+    outline: 2px solid var(--c-cyan);
+    outline-offset: 3px;
+    border-radius: 3px;
   }
 
   .line-out {
