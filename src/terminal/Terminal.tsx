@@ -197,6 +197,14 @@ export function Terminal() {
       </header>
 
       <div className="term-body" ref={scrollRef}>
+        {/* The document had no h1 at all, so its first heading was the h2
+            inside a project — nothing to navigate to by heading, and no
+            top-level heading for a crawler. Visually hidden, because the
+            banner below already says it on screen. */}
+        <h1 className="sr-only">
+          {profile.name} — {profile.role}, {profile.location}
+        </h1>
+
         <p className="banner">
           {profile.name} — {profile.role}, {profile.location}.
           <br />
