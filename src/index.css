@@ -1,520 +1,285 @@
 @import "tailwindcss";
+@import "@fontsource-variable/newsreader";
 @import "@fontsource-variable/jetbrains-mono";
 
 /* ---------------------------------------------------------------------------
-   A terminal, not a page.
+   Two voices, one rule about colour.
 
-   The palette is a terminal colour scheme rather than a UI palette: one ink,
-   one dim, and a small set of ANSI-ish accents that carry meaning — cyan for
-   a path or a name, green for a value, magenta for a tag, amber for a
-   warning. Dark is the default because that is what a terminal is; the light
-   scheme is the same scheme inverted, the way Terminal.app ships one.
+   The page carries a résumé, and a résumé is two kinds of writing at once:
+   the narrative (why this person, what they understand) and the record
+   (where, when, with what). Those get different typefaces rather than
+   different sizes of the same one — Newsreader for the narrative, JetBrains
+   Mono for the record.
+
+   The rule about colour: it only ever encodes a technology's category. There
+   is no brand accent competing with it, so a splash of teal on this page
+   always means "framework" and never means "we felt like it". Links and
+   focus carry weight and rules instead. src/lib/tech.ts already argued for
+   this on the chips; this stylesheet takes it as the whole system.
 --------------------------------------------------------------------------- */
 
 :root {
-  /* Dark — the default world */
-  --d-bg: #0d1117;
-  --d-chrome: #161b22;
-  --d-well: #010409;
-  --d-line: #21262d;
-  --d-ink: #d7dee7;
-  --d-dim: #7d8894;
-  --d-cyan: #5ccfe6;
-  --d-green: #9ece6a;
-  --d-magenta: #bb9af7;
-  --d-amber: #e0af68;
-  --d-red: #f7768e;
-  --d-blue: #7aa2f7;
+  /* Light — paper with a faint green cast, so the neutral reads chosen. */
+  --l-paper: #f6f7f5;
+  --l-surface: #ffffff;
+  --l-sunken: #eef0ed;
+  --l-ink: #14181a;
+  --l-muted: #5c6461;
+  /* 4.86:1 on paper, 4.56:1 on sunken. The lighter grey this started as
+     read better and failed AA at 3.19:1 — these labels are small caps, so
+     they need the ratio more than most text on the page. */
+  --l-faint: #676e6b;
+  --l-rule: #dde1de;
 
-  /* Light — the same scheme, inverted */
-  --l-bg: #fbfaf8;
-  --l-chrome: #f0eeea;
-  --l-well: #ffffff;
-  --l-line: #ddd9d2;
-  --l-ink: #2b2b2b;
-  --l-dim: #6b665f;
-  --l-cyan: #10707f;
-  --l-green: #416d1e;
-  --l-magenta: #9a3fa8;
-  --l-amber: #9a6500;
-  --l-red: #b3232f;
-  --l-blue: #2f5fd0;
+  --l-language: #8a5a00;
+  --l-framework: #0a6b6f;
+  --l-data: #7a3a9c;
+  --l-tooling: #3f6b3a;
+
+  /* Dark — the same cast, at the other end. */
+  --d-paper: #0e1112;
+  --d-surface: #151919;
+  --d-sunken: #0a0d0d;
+  --d-ink: #e9edeb;
+  --d-muted: #939c99;
+  /* 4.60:1 on paper, 4.74:1 on sunken; was 4.05:1. */
+  --d-faint: #767f7c;
+  --d-rule: #232a29;
+
+  --d-language: #e0b050;
+  --d-framework: #5ad0d6;
+  --d-data: #c79bf0;
+  --d-tooling: #8fc98a;
 }
 
+/* The un-stamped default is light. Every colour below is defined here first,
+   so nothing depends on a media query or a data-theme stamp existing. */
 :root {
-  --c-bg: var(--l-bg);
-  --c-chrome: var(--l-chrome);
-  --c-well: var(--l-well);
-  --c-line: var(--l-line);
+  --c-paper: var(--l-paper);
+  --c-surface: var(--l-surface);
+  --c-sunken: var(--l-sunken);
   --c-ink: var(--l-ink);
-  --c-dim: var(--l-dim);
-  --c-cyan: var(--l-cyan);
-  --c-green: var(--l-green);
-  --c-magenta: var(--l-magenta);
-  --c-amber: var(--l-amber);
-  --c-red: var(--l-red);
-  --c-blue: var(--l-blue);
+  --c-muted: var(--l-muted);
+  --c-faint: var(--l-faint);
+  --c-rule: var(--l-rule);
+  --c-language: var(--l-language);
+  --c-framework: var(--l-framework);
+  --c-data: var(--l-data);
+  --c-tooling: var(--l-tooling);
+
+  --c-tint: color-mix(in oklab, var(--c-ink) 4%, transparent);
+  --shadow-plate: 0 1px 2px rgb(20 24 26 / 0.05), 0 12px 32px -12px rgb(20 24 26 / 0.14);
 }
 
+/* System dark, guarded so an explicit light choice still beats a dark OS. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --c-bg: var(--d-bg);
-    --c-chrome: var(--d-chrome);
-    --c-well: var(--d-well);
-    --c-line: var(--d-line);
+    --c-paper: var(--d-paper);
+    --c-surface: var(--d-surface);
+    --c-sunken: var(--d-sunken);
     --c-ink: var(--d-ink);
-    --c-dim: var(--d-dim);
-    --c-cyan: var(--d-cyan);
-    --c-green: var(--d-green);
-    --c-magenta: var(--d-magenta);
-    --c-amber: var(--d-amber);
-    --c-red: var(--d-red);
-    --c-blue: var(--d-blue);
+    --c-muted: var(--d-muted);
+    --c-faint: var(--d-faint);
+    --c-rule: var(--d-rule);
+    --c-language: var(--d-language);
+    --c-framework: var(--d-framework);
+    --c-data: var(--d-data);
+    --c-tooling: var(--d-tooling);
+
+    --c-tint: color-mix(in oklab, var(--c-ink) 7%, transparent);
+    --shadow-plate: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -16px rgb(0 0 0 / 0.7);
   }
 }
 
+/* The explicit choice, so the toggle wins in the other direction too. */
 :root[data-theme="dark"] {
-  --c-bg: var(--d-bg);
-  --c-chrome: var(--d-chrome);
-  --c-well: var(--d-well);
-  --c-line: var(--d-line);
+  --c-paper: var(--d-paper);
+  --c-surface: var(--d-surface);
+  --c-sunken: var(--d-sunken);
   --c-ink: var(--d-ink);
-  --c-dim: var(--d-dim);
-  --c-cyan: var(--d-cyan);
-  --c-green: var(--d-green);
-  --c-magenta: var(--d-magenta);
-  --c-amber: var(--d-amber);
-  --c-red: var(--d-red);
-  --c-blue: var(--d-blue);
+  --c-muted: var(--d-muted);
+  --c-faint: var(--d-faint);
+  --c-rule: var(--d-rule);
+  --c-language: var(--d-language);
+  --c-framework: var(--d-framework);
+  --c-data: var(--d-data);
+  --c-tooling: var(--d-tooling);
+
+  --c-tint: color-mix(in oklab, var(--c-ink) 7%, transparent);
+  --shadow-plate: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -16px rgb(0 0 0 / 0.7);
 }
 
+/* Compiles the utilities straight to var(--c-*), so a theme swap is a
+   variable change and never a re-render. */
 @theme inline {
-  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+  --color-paper: var(--c-paper);
+  --color-surface: var(--c-surface);
+  --color-sunken: var(--c-sunken);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-faint: var(--c-faint);
+  --color-rule: var(--c-rule);
+  --color-language: var(--c-language);
+  --color-framework: var(--c-framework);
+  --color-data: var(--c-data);
+  --color-tooling: var(--c-tooling);
+
+  --font-serif: "Newsreader Variable", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace;
 }
 
 @layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-    accent-color: var(--c-cyan);
-    caret-color: var(--c-cyan);
-    color-scheme: light dark;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
-  main {
-    display: contents;
+  html {
+    scroll-behavior: smooth;
+    /* The rail is sticky but anchors still need headroom on small screens. */
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
     margin: 0;
-    min-height: 100svh;
-    padding: clamp(0px, 2.5vw, 32px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--c-bg);
+    /* Explicit, because the host paints its own ground behind the page and a
+       transparent body silently borrows the wrong theme. */
+    background: var(--c-paper);
     color: var(--c-ink);
-    font-family: var(--font-mono);
-    font-size: 14px;
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  ::selection {
-    background: var(--c-cyan);
-    color: var(--c-bg);
+  h1,
+  h2,
+  h3 {
+    font-weight: 500;
+    text-wrap: balance;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    margin: 0;
   }
 
   a {
-    color: var(--c-cyan);
-    text-underline-offset: 3px;
-  }
-  a:hover {
-    text-decoration: underline;
+    color: inherit;
   }
 
-  code {
-    color: var(--c-amber);
-  }
-
-  kbd {
-    padding: 0 5px;
-    border: 1px solid var(--c-line);
-    border-radius: 4px;
-    color: var(--c-dim);
-  }
-
-  strong {
-    color: var(--c-ink);
-    font-weight: 700;
-  }
-
+  /* One focus treatment everywhere, in ink rather than a colour — colour on
+     this page is reserved for tech categories. */
   :focus-visible {
-    outline: 2px solid var(--c-cyan);
-    outline-offset: 2px;
+    outline: 2px solid var(--c-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+  ::selection {
+    background: color-mix(in oklab, var(--c-ink) 16%, transparent);
   }
 }
 
 @layer components {
-  /* ---- The window ------------------------------------------------------- */
-  .term {
-    display: flex;
-    flex-direction: column;
-    width: min(1040px, 100%);
-    height: min(760px, calc(100svh - 2 * clamp(0px, 2.5vw, 32px)));
-    overflow: hidden;
-    background: var(--c-well);
-    border: 1px solid var(--c-line);
-    border-radius: 12px;
-    box-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.5);
+  /* ---- the record voice ------------------------------------------------ */
+
+  .rec {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--c-faint);
   }
 
-  .term-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 12px;
-    height: 38px;
-    flex: 0 0 auto;
-    background: var(--c-chrome);
-    border-bottom: 1px solid var(--c-line);
-  }
-
-  .lights {
-    display: flex;
-    gap: 7px;
-  }
-  .lights span {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-  }
-  .lights span:nth-child(1) { background: #ff5f57; }
-  .lights span:nth-child(2) { background: #febc2e; }
-  .lights span:nth-child(3) { background: #28c840; }
-
-  .term-title {
-    flex: 1;
-    text-align: center;
-    font-size: 12px;
-    color: var(--c-dim);
-  }
-
-  .term-theme {
-    font: inherit;
-    font-size: 12px;
-    color: var(--c-dim);
-    background: none;
-    border: 1px solid var(--c-line);
-    border-radius: 6px;
-    padding: 1px 8px;
-    cursor: pointer;
-  }
-  .term-theme:hover {
-    color: var(--c-ink);
-    border-color: var(--c-cyan);
-  }
-
-  /* ---- Scrollback ------------------------------------------------------- */
-  .term-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 18px clamp(14px, 3vw, 26px) 8px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--c-line) transparent;
-  }
-
-  .banner {
-    margin: 0 0 14px;
-    color: var(--c-ink);
-  }
-
-  .line-in {
-    margin: 12px 0 0;
-    word-break: break-word;
-  }
-  .line-in:first-of-type {
-    margin-top: 0;
-  }
-
-  .prompt {
-    color: var(--c-green);
-    user-select: none;
-    margin-right: 8px;
-  }
-
-  .line-in.live {
-    display: flex;
-    align-items: baseline;
-    gap: 0;
-  }
-
-  .line-in.live input {
-    flex: 1;
-    min-width: 0;
-    font: inherit;
-    color: var(--c-ink);
-    background: none;
-    border: none;
-    padding: 0;
-    outline: none;
-  }
-  /* Tabbing back in should show where focus landed. */
-  .line-in.live input:focus-visible {
-    outline: 2px solid var(--c-cyan);
-    outline-offset: 3px;
-    border-radius: 3px;
-  }
-
-  .line-out {
-    margin-top: 6px;
-    animation: rise 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  .line-out p {
-    margin: 0 0 6px;
-  }
-
-  .muted { color: var(--c-dim); }
-  .err { color: var(--c-red); }
-  .lede { color: var(--c-ink); }
-
-  .stack > * + * {
-    margin-top: 10px;
-  }
-  .stack p {
-    max-width: 78ch;
-  }
-
-  /* ---- Key/value rows --------------------------------------------------- */
-  .rows {
-    margin: 0;
-    display: grid;
-    gap: 4px 18px;
-  }
-  .row {
-    display: grid;
-    grid-template-columns: minmax(0, 11ch) minmax(0, 1fr);
-    gap: 18px;
-    align-items: baseline;
-  }
-  .row dt {
-    color: var(--c-cyan);
-  }
-  .row dd {
-    margin: 0;
-    min-width: 0;
-  }
-  @media (max-width: 560px) {
-    .row {
-      grid-template-columns: 1fr;
-      gap: 0;
-    }
-  }
-
-  /* ---- ls --------------------------------------------------------------- */
-  .listing {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .listing li {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 10px;
-  }
-  .slug {
-    color: var(--c-cyan);
-    min-width: 17ch;
-  }
-  .dash { color: var(--c-dim); }
-  .hint-line { margin-top: 8px; }
-
-  .tag {
-    color: var(--c-magenta);
-    border: 1px solid currentColor;
-    border-radius: 4px;
-    padding: 0 6px;
-    font-size: 11px;
-  }
-
-  /* ---- Project detail --------------------------------------------------- */
-  .detail-head {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-  .detail-head h2 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--c-ink);
-  }
-  .year { color: var(--c-dim); }
-
-  .shots {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    margin-bottom: 12px;
-    scrollbar-width: thin;
-  }
-  .shots img {
-    width: min(58%, 300px);
-    flex: 0 0 auto;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    object-position: top;
-    border: 1px solid var(--c-line);
-    border-radius: 6px;
-  }
-
-  .blurb {
-    max-width: 78ch;
-  }
-
-  .features {
-    margin: 10px 0;
-    padding-left: 0;
-    list-style: none;
-  }
-  .features li::before {
-    content: "· ";
-    color: var(--c-green);
-  }
-
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 12px;
-  }
-
-  /* ---- Roles ------------------------------------------------------------ */
-  .roles {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .roles > li + li {
-    margin-top: 16px;
-  }
-  .role-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 10px;
-  }
-  .when {
-    color: var(--c-dim);
+  .num {
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
   }
-  .role-title {
-    color: var(--c-ink);
-    font-weight: 700;
-  }
-  .points {
-    margin: 4px 0 8px;
-    padding-left: 0;
-    list-style: none;
-    max-width: 78ch;
-  }
-  .points li::before {
-    content: "· ";
-    color: var(--c-dim);
-  }
 
-  /* ---- Chips ------------------------------------------------------------ */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 6px 0 0;
-    padding: 0;
-    list-style: none;
-  }
+  /* ---- tech chips: the only colour on the page ------------------------- */
+
   .chip {
-    font-size: 12px;
-    padding: 0 7px;
-    border-radius: 4px;
-    color: var(--chip-hue);
-    border: 1px solid color-mix(in oklab, var(--chip-hue) 40%, transparent);
-    background: color-mix(in oklab, var(--chip-hue) 10%, transparent);
-  }
-  .chip-language { --chip-hue: var(--c-blue); }
-  .chip-framework { --chip-hue: var(--c-cyan); }
-  .chip-data { --chip-hue: var(--c-green); }
-  .chip-tooling { --chip-hue: var(--c-magenta); }
-
-  /* ---- Suggestions ------------------------------------------------------ */
-  .term-hints {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    flex: 0 0 auto;
-    padding: 10px clamp(14px, 3vw, 26px);
-    background: var(--c-chrome);
-    border-top: 1px solid var(--c-line);
-  }
-  .term-hints button {
-    font: inherit;
-    font-size: 12px;
-    color: var(--c-dim);
-    background: none;
-    border: 1px solid var(--c-line);
-    border-radius: 999px;
-    padding: 2px 12px;
-    cursor: pointer;
-    transition: color 160ms ease, border-color 160ms ease;
-  }
-  .term-hints button:hover {
-    color: var(--c-cyan);
-    border-color: var(--c-cyan);
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1;
+    padding: 0.34rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+    /* The border carries the hue; the fill is a whisper of it, so a dense
+       stack of chips does not turn into a bag of sweets. */
+    background: color-mix(in oklab, currentColor 8%, transparent);
+    white-space: nowrap;
   }
 
-  /* ---- Touch ------------------------------------------------------------
-     Two things break this on a phone. iOS zooms the whole page when you
-     focus an input smaller than 16px, which would wreck the layout the
-     moment someone taps the prompt. And 24-26px controls are well under
-     the 44px a finger needs.
-  --------------------------------------------------------------------- */
-  @media (pointer: coarse) {
-    .line-in.live input {
-      font-size: 16px;
-      min-height: 40px;
+  .chip-language { color: var(--c-language); }
+  .chip-framework { color: var(--c-framework); }
+  .chip-data { color: var(--c-data); }
+  .chip-tooling { color: var(--c-tooling); }
+
+  /* ---- links ----------------------------------------------------------- */
+
+  .lnk {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: color-mix(in oklab, var(--c-ink) 35%, transparent);
+    transition: text-decoration-thickness 120ms ease, text-decoration-color 120ms ease;
+  }
+
+  .lnk:hover {
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--c-ink);
+  }
+
+  /* ---- reveal on scroll ------------------------------------------------ */
+
+  .rise {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--rise-delay, 0ms);
+  }
+
+  .rise.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
-    .term-hints {
-      gap: 10px;
-      padding: 12px clamp(14px, 3vw, 26px);
-    }
-    .term-hints button {
-      min-height: 44px;
-      padding: 2px 16px;
-      font-size: 14px;
-    }
-    .term-theme {
-      min-height: 36px;
-      min-width: 56px;
-      font-size: 13px;
-    }
-    /* A bigger hit area for the prompt line itself. */
-    .line-in.live {
-      padding: 6px 0;
-    }
+  }
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Prose measure. Anything wider than this is deliberately breaking out. */
+  .measure {
+    max-width: 34rem;
   }
 }
