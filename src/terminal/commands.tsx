@@ -22,6 +22,16 @@ export function slugOf(name: string) {
     .replace(/^-|-$/g, '')
 }
 
+/**
+ * Content still waiting on the résumé is marked TODO in profile.ts. It must
+ * never reach the screen — the current role is the first thing `experience`
+ * prints, and "TODO — current employer" on a live portfolio is worse than
+ * saying nothing.
+ */
+const isPlaceholder = (value?: string) => !value || value.trim().startsWith('TODO')
+
+const realOnly = (values?: string[]) => (values ?? []).filter((v) => !isPlaceholder(v))
+
 export type CommandContext = {
   clear: () => void
   setTheme: (theme: 'dark' | 'light') => void
@@ -206,24 +216,37 @@ export const COMMANDS: Command[] = [
     summary: 'where I have worked',
     run: () => (
       <ol className="roles">
-        {experience.map((role) => (
-          <li key={`${role.company}-${role.start}`}>
-            <p className="role-head">
-              <span className="when">
-                {role.start} – {role.end ?? 'present'}
-              </span>
-              <span className="role-title">{role.title}</span>
-              <span className="muted">{role.company}</span>
-              {role.end === null ? <span className="tag">current</span> : null}
-            </p>
-            <ul className="points">
-              {role.points.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-            {role.stack?.length ? <Chips items={role.stack} /> : null}
-          </li>
-        ))}
+        {experience.map((role) => {
+          const points = realOnly(role.points)
+          const stack = realOnly(role.stack)
+          const company = isPlaceholder(role.company) ? null : role.company
+
+          return (
+            <li key={`${role.company}-${role.start}`}>
+              <p className="role-head">
+                <span className="when">
+                  {role.start} – {role.end ?? 'present'}
+                </span>
+                <span className="role-title">{role.title}</span>
+                {company ? <span className="muted">{company}</span> : null}
+                {role.location ? <span className="muted">{role.location}</span> : null}
+                {role.end === null ? <span className="tag">current</span> : null}
+              </p>
+
+              {points.length ? (
+                <ul className="points">
+                  {points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="points muted">Details to follow.</p>
+              )}
+
+              {stack.length ? <Chips items={stack} /> : null}
+            </li>
+          )
+        })}
       </ol>
     ),
   },
