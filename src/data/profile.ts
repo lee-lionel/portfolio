@@ -266,11 +266,11 @@ export const projects: Project[] = [
       },
       {
         src: '/shots/nerdydex-2.jpg',
-        alt: 'The Pokédex after a search, showing the returned Pokémon.',
+        alt: 'The Pokédex after searching for Charizard, showing its types, abilities and base stats.',
       },
       {
         src: '/shots/nerdydex-1.jpg',
-        alt: 'The home screen featuring a Pokémon of the moment with its flavour text.',
+        alt: 'The home screen featuring Crabominable as the Pokémon of the moment, with its flavour text.',
       },
     ],
   },
@@ -293,7 +293,7 @@ export const projects: Project[] = [
       },
       {
         src: '/shots/barcarrat-3.jpg',
-        alt: 'The hand in play after a wager is staked.',
+        alt: 'A hand mid-decision: the player holds 6 with Hit and Stand offered, and a note reading "On 6 the book stands."',
       },
       {
         src: '/shots/barcarrat-1.jpg',

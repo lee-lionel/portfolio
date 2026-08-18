@@ -21,9 +21,10 @@ export function Section({
 }) {
   return (
     <section id={id} className="scroll-mt-24 py-20 sm:py-28">
-      <header className="rise mb-10 border-b border-rule pb-4 sm:mb-14">
+      <header className="rise mb-10 sm:mb-14">
         <p className="rec mb-3">{label}</p>
         <h2 className="text-3xl sm:text-4xl">{title}</h2>
+        <span aria-hidden="true" className="hdr-rule mt-4" />
       </header>
       {children}
     </section>

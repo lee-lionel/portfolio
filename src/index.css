@@ -241,6 +241,63 @@
     text-decoration-color: var(--c-ink);
   }
 
+
+  /* ---- scroll-linked motion ------------------------------------------- */
+
+  /* The hero drifts and fades as the reader leaves it, so the page hands
+     over to the work rather than the hero just sliding off unchanged. */
+  .hero-fx {
+    opacity: clamp(0, calc(1 - var(--scroll, 0) * 1.15), 1);
+    transform: translateY(calc(var(--scroll, 0) * 2.5rem));
+    will-change: opacity, transform;
+  }
+
+  /* A screenshot sits slightly larger than its frame and slides against the
+     scroll, so the plates have depth instead of being flat pictures. The
+     frame clips; the image moves inside it. */
+  .plate-frame {
+    overflow: hidden;
+  }
+
+  /* Travel is a percentage of the plate's own height, not a fixed rem: the
+     headroom the scale creates is proportional too, and a fixed distance
+     that fits the wide lead plate slides clean off the edge of the small
+     ones. scale(1.12) yields 6% of headroom each way; 4% keeps a margin. */
+  .plate-frame img {
+    transform: translateY(calc((var(--p, 0.5) - 0.5) * -8%)) scale(1.12);
+    will-change: transform;
+  }
+
+  /* Section rules draw themselves in when the header arrives. */
+  .hdr-rule {
+    display: block;
+    height: 1px;
+    background: var(--c-rule);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1) 120ms;
+  }
+
+  .rise.is-in .hdr-rule {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-fx {
+      opacity: 1;
+      transform: none;
+    }
+
+    .plate-frame img {
+      transform: none;
+    }
+
+    .hdr-rule {
+      transform: scaleX(1);
+      transition: none;
+    }
+  }
+
   /* ---- reveal on scroll ------------------------------------------------ */
 
   .rise {

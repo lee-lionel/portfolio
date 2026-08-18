@@ -5,7 +5,7 @@ export function Hero() {
   const rows = facts.filter((f) => isReal(f.value))
 
   return (
-    <header id="top" className="pt-16 pb-20 sm:pt-24 sm:pb-28">
+    <header id="top" className="hero-fx pt-16 pb-20 sm:pt-24 sm:pb-28">
       {profile.availability && (
         <p className="rise rec mb-8 flex items-center gap-2.5">
           {/* A live dot, because "recently started" is a fact with a clock on

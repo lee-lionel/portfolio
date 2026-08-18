@@ -4,9 +4,11 @@ import { Work } from './components/Work'
 import { About, Education, Experience, Skills } from './components/Record'
 import { Contact, Footer } from './components/Contact'
 import { useReveal } from './lib/reveal'
+import { useScrollFx } from './lib/scrollfx'
 
 export default function App() {
   useReveal()
+  useScrollFx()
 
   return (
     <>

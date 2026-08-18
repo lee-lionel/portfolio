@@ -52,14 +52,21 @@ function Plate({ project, lead }: { project: Project; lead: boolean }) {
             </span>
           </div>
         )}
-        <img
-          src={shot.src}
-          alt={shot.alt}
-          loading={lead ? 'eager' : 'lazy'}
-          decoding="async"
-          className="block w-full object-cover object-top transition-opacity duration-300"
-          style={{ aspectRatio: lead ? '16 / 10' : '16 / 10' }}
-        />
+        {/* The frame clips; the image is a little larger than it and slides
+            against the scroll, which is what gives the plate depth. */}
+        <div
+          data-fx
+          className="plate-frame"
+          style={{ aspectRatio: '16 / 10' }}
+        >
+          <img
+            src={shot.src}
+            alt={shot.alt}
+            loading={lead ? 'eager' : 'lazy'}
+            decoding="async"
+            className="block h-full w-full object-cover object-top"
+          />
+        </div>
       </div>
 
       {shots.length > 1 && (
