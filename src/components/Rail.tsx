@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { sections, profile } from '../data/profile'
 import { useActiveSection } from '../lib/reveal'
-import { useTheme } from '../lib/theme'
+import { useTheme } from '../lib/theme-context'
 
 const LABEL: Record<string, string> = {
   light: 'Light',

@@ -1,19 +1,12 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react'
+import { ThemeContext, type Theme, type ThemeContextValue } from './theme-context'
 
-/**
- * Three states, not two.
- *  - 'system' stamps nothing on <html>, so prefers-color-scheme decides.
- *  - 'light' / 'dark' stamp data-theme and beat the OS in both directions.
- */
-export type Theme = 'light' | 'dark' | 'system'
 
 const STORAGE_KEY = 'portfolio-theme'
 
@@ -29,16 +22,7 @@ function apply(theme: Theme) {
   else root.setAttribute('data-theme', theme)
 }
 
-type ThemeContextValue = {
-  theme: Theme
-  /** What the viewer is actually seeing right now. */
-  resolved: 'light' | 'dark'
-  setTheme: (theme: Theme) => void
-  /** Cycles light → dark → system. */
-  cycle: () => void
-}
 
-const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(read)
@@ -89,8 +73,3 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
-export function useTheme() {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useTheme must be used inside <ThemeProvider>')
-  return ctx
-}
