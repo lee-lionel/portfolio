@@ -1,94 +1,97 @@
-# Portfolio — Lee Lionel
+# Portfolio
 
-A portfolio you operate rather than scroll. It's a terminal: commands are the
-site map.
+A résumé you can read — the projects, the experience and the contact details,
+all on the page without asking anyone to type a command first.
 
-![The terminal after running help, listing every command](screenshots/01-terminal.png)
+▶︎ **[lee-lionel.github.io/portfolio](https://lee-lionel.github.io/portfolio/)**
 
-## Why a terminal
+![The hero in dark mode: the name and role set large, the thesis beneath it, and a spec block of facts](screenshots/01-hero.jpg)
 
-Every earlier pass at this was a scrolling page with a different coat of paint.
-The form was the problem, not the palette. A command line suits the subject,
-and it is the rare portfolio you actually *use*.
+## What it is
 
-Nobody has to guess how: `whoami` runs on load so the screen is never an empty
-prompt, the commands are listed under the input as buttons, and `help` prints
-the lot.
+Built with Vite, React 19, TypeScript and Tailwind v4. One page, six sections,
+and a sticky index that tracks where you are.
 
-## Commands
+It replaced a terminal. That version made the visitor type `experience` or
+`ls` to see anything, which meant a recruiter opened it, saw a name and an
+empty prompt, and left. The work is the point, so the work leads.
 
-| Command            | What it does                    |
-| ------------------ | ------------------------------- |
-| `whoami`           | the short version               |
-| `about`            | the longer version              |
-| `ls`               | list the projects               |
-| `open <project>`   | one project, with screenshots   |
-| `experience`       | roles, newest first             |
-| `skills`           | grouped, colour-coded           |
-| `education`        | schooling                       |
-| `contact`          | email, GitHub, LinkedIn         |
-| `resume`           | the PDF, once it's published    |
-| `theme [dark｜light]` | switch appearance            |
-| `clear`            | empty the screen                |
+## The design
 
-`Tab` completes command names, and project names after `open`. `↑`/`↓` walk
-history. `Ctrl-L` clears. There are replies for `sudo`, `rm` and `exit` too.
+**Two typefaces, because a résumé is two kinds of writing at once.** Newsreader
+carries the narrative — the paragraph about coming to software from immigration
+casework. JetBrains Mono carries the record: dates, stacks, labels. The old
+version set everything in one monospace face, so nothing had any hierarchy.
 
-**Tab only completes when there's something to complete** — on an empty prompt
-it moves focus normally, so the terminal is never a keyboard trap.
+**Colour only ever encodes a technology's category.** Language, framework,
+data, tooling. There is no separate brand accent competing with it, so a
+splash of teal on this page always means "framework" and never means "we felt
+like it". Links and focus carry weight and a rule instead.
 
-## Linkable
+![The work section: a project screenshot at size in a browser frame, with a pager through the app's real states](screenshots/02-work.jpg)
 
-The URL carries the last command, so any view can be shared:
+**Screenshots at size.** They are the only evidence on a portfolio that the
+thing was actually built, so each project shows its real screens and you can
+page through the states the app genuinely has.
 
-```
-/#open sanjis-kitchen     opens that project
-/#contact                 goes straight to contact
-```
+**Experience reads as a ledger** — tabular dates down the left edge, so the
+whole history scans in one column.
 
-An unrecognised command falls back to the prompt rather than an empty screen.
+![Experience in light mode: dates in tabular figures on the left, roles and detail on the right](screenshots/03-experience.jpg)
 
-![A project opened, with its real screenshots and colour-coded stack](screenshots/02-project.png)
+## Motion
 
-## Design
+Scroll-linked, and none of it takes the scroll over — a wheel turn moves the
+page exactly as far as it always did.
 
-Output is **rendered, not printed as ASCII** — a project shows its real
-screenshots, its stack as colour-coded chips, and its links. A screenshot beats
-box-drawing characters.
+- Screenshots parallax inside their frames. The travel is a percentage of
+  plate height rather than a fixed distance: the headroom the scale creates is
+  proportional too, so a fixed value tuned on the wide lead plate slid off the
+  edge of the small ones.
+- The hero drifts and fades as you leave it.
+- Section rules draw themselves in as their heading arrives.
 
-The palette is a terminal colour scheme rather than a UI palette: cyan names
-things, green is the prompt and a value, magenta tags, amber warns, red errors.
-Dark by default, because that is what a terminal is; light is the same scheme
-inverted. Both pass WCAG AA — checked with axe-core, not by eye.
+Every effect is switched off entirely under `prefers-reduced-motion`, and that
+is verified rather than asserted — the tests compare computed transforms at two
+scroll positions with the preference set both ways.
 
-Type is JetBrains Mono throughout, self-hosted, so there are no external font
-requests.
+![The same page in light mode](screenshots/04-light-hero.jpg)
 
-![The same terminal in light mode](screenshots/03-light.png)
+## Editing it
 
-## Content
+`src/data/profile.ts` is the single source of truth — name, thesis, roles,
+projects, skills, education, links. Change that file and every section
+follows; no component needs touching.
 
-**Everything is in [`src/data/profile.ts`](src/data/profile.ts).** Edit that one
-file and every command updates. Anything marked `TODO` is waiting on the résumé.
+Anything still reading `TODO` is filtered out rather than rendered, so an
+unfinished entry never reaches a visitor. That is what the current employer
+row is waiting on.
+
+To show a résumé download, put the PDF in `public/` and set `resumeUrl`. It is
+deliberately unset: the PDF carries a phone number, and the page withholds
+that on purpose.
 
 ## Running it
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm run build    # → dist/
+npm run build    # typechecks, then builds to dist/
+npm run lint
 ```
 
-Pinned to Vite 7: Vite 8 requires Node 20.19+ or 22.12+.
+## Deploying
 
-## Layout
+Pushing to `master` builds and publishes to GitHub Pages via
+`.github/workflows/deploy.yml`.
 
-```
-src/
-├── terminal/
-│   ├── Terminal.tsx    the shell — history, completion, boot, deep links
-│   └── commands.tsx    the command registry and its output
-├── data/profile.ts     all the content
-├── lib/                theme, tech classification
-└── index.css           the colour scheme, and only here
-```
+Two things this needs that are easy to miss on a project site:
+
+- `vite.config.ts` sets `base` to `/portfolio/` for builds, because the site
+  is served from a subpath rather than a domain root. With `base: '/'` the
+  page loads and then asks for `/assets/…` at the root, gets a 404, and never
+  boots.
+- Paths in `profile.ts` go through `src/lib/asset.ts`. Vite rewrites asset
+  URLs it can see, but those screenshot paths are plain strings, so it cannot
+  — and they resolved against the domain root, which meant every project
+  screenshot 404'd while the page itself looked fine.

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { projects, type Project } from '../data/profile'
 import { chipClass } from '../lib/tech'
 import { isReal, realOnly } from '../lib/placeholder'
+import { asset } from '../lib/asset'
 import { Section } from './Section'
 
 /** Every screenshot a project has, poster first, deduped. */
@@ -60,7 +61,7 @@ function Plate({ project, lead }: { project: Project; lead: boolean }) {
           style={{ aspectRatio: '16 / 10' }}
         >
           <img
-            src={shot.src}
+            src={asset(shot.src)}
             alt={shot.alt}
             loading={lead ? 'eager' : 'lazy'}
             decoding="async"
