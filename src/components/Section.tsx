@@ -20,7 +20,12 @@ export function Section({
   children: ReactNode
 }) {
   return (
-    <section id={id} className="scroll-mt-24 py-20 sm:py-28">
+    /* Asymmetric on purpose: more room above a heading than below the
+       content it follows, so the space reads as belonging to the section
+       that is starting rather than as the previous one trailing off. The
+       gap was a uniform 224px, which is fine after a full-width screenshot
+       and far too much after a two-line bullet. */
+    <section id={id} className="scroll-mt-24 pt-16 pb-12 sm:pt-24 sm:pb-16">
       <header className="rise mb-10 sm:mb-14">
         <p className="rec mb-3">{label}</p>
         <h2 className="text-3xl sm:text-4xl">{title}</h2>
