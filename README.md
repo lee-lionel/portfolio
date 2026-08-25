@@ -82,16 +82,26 @@ npm run lint
 
 ## Deploying
 
-Pushing to `master` builds and publishes to GitHub Pages via
-`.github/workflows/deploy.yml`.
+```bash
+npm run deploy
+```
 
-Two things this needs that are easy to miss on a project site:
+Builds and pushes to the `gh-pages` branch, which is what GitHub Pages
+serves. Pages rebuilds itself a minute or so later.
+
+There is no Actions workflow: adding `.github/workflows/` needs a token with
+the `workflow` scope, which this machine's `gh` does not have. The branch
+route needs no special scope. If you do add a workflow later, switch the
+Pages source back to "GitHub Actions" — otherwise it will keep serving this
+branch and ignore the workflow.
+
+Two things a project site needs that are easy to miss:
 
 - `vite.config.ts` sets `base` to `/portfolio/` for builds, because the site
   is served from a subpath rather than a domain root. With `base: '/'` the
-  page loads and then asks for `/assets/…` at the root, gets a 404, and never
-  boots.
+  page loads, asks for `/assets/…` at the root, gets a 404, and never boots.
+  `npm run deploy` refuses to publish a build missing that prefix.
 - Paths in `profile.ts` go through `src/lib/asset.ts`. Vite rewrites asset
   URLs it can see, but those screenshot paths are plain strings, so it cannot
-  — and they resolved against the domain root, which meant every project
+  — they resolved against the domain root, which meant every project
   screenshot 404'd while the page itself looked fine.
